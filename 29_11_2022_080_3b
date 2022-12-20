@@ -1,0 +1,114 @@
+#include<stdio.h>
+#include<stdlib.h>     // add header file for the program
+#include<string.h>
+#include<ctype.h>
+#define MAX 100       //define the max size  
+
+int top=-1;            //define the value of top 
+int a[MAX];
+
+void push(char x)         //intialise the push funtion 
+{
+a[++top]=x;
+}
+
+char pop()         //intialise the pop funtion 
+{
+if(top==-1)           // check the condition 
+return -1;
+
+else
+return a[top--];
+}
+
+int priority(char c)             //check the priority of the char
+{
+if(c=='(' || c==')')
+return -1;
+
+else if(c=='+'||c=='-')
+return 1;
+
+else if(c=='*'||c=='/')
+return 2;
+}
+
+void strrev(char *exp)           // code for the reverse the exprresion
+{
+char temp[50];
+int size = strlen(exp);
+temp[size--]='\0';
+int i=0;
+
+while(exp[i]!='\0')            //initate the while loop and check the condition 
+{
+
+temp[size]=exp[i];
+i++;
+size--;                //size decrement 
+}
+strcpy(exp,temp);
+}
+
+void iprefix(char infix[MAX], char prefix[MAX])    //implementation of the iprefix function
+{
+
+char temp, x;
+int i=0, j=0;
+strrev(infix);       // again reverse the expression 
+
+while(infix[i]!='\0')       //check the condition is infix[i]!='\0'
+{
+
+temp=infix[i];
+if(isalnum(temp))
+
+{
+prefix[j++]=temp;
+}
+
+else if(temp==')')
+push(temp);
+
+else if(temp=='(')
+{
+
+while((x=pop())!=')')
+{
+
+prefix[j++]=x;
+}
+
+}
+
+else
+{
+while(priority(a[top]>=priority(temp)))  //priority check of the value 
+{
+prefix[j++]=pop();
+}
+push(temp);
+}
+i++;          // increment the value of i
+}
+while(top!=-1)            //check the condition either the top!= -1 
+prefix[j++]=pop();
+prefix[j]='\0';
+strrev(prefix);            //call the strrev function 
+}
+
+int main()
+{
+char infix[MAX], prefix[MAX];
+
+printf("Enter the infix expression\n");
+scanf("%s", infix);
+
+printf("The infix expression is %s\n" , infix);
+
+iprefix(infix,prefix);          //iprefix function called here
+
+printf("The prefix expression is %s\n" , prefix);
+
+return 0;
+}
